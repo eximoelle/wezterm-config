@@ -1,26 +1,8 @@
 local wezterm = require("wezterm")
-local theme_manager = require("theme_manager")
 local keybindings = require("keybindings")
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
-
--- Function to dynamically update the theme for WezTerm and Neovim
-wezterm.on("update-right-status", function(window, pane)
-	local appearance = wezterm.gui.get_appearance()
-	local selected_theme = theme_manager.get_theme_for_appearance(appearance)
-	local current_scheme = window:get_config_overrides() and window:get_config_overrides().color_scheme
-
-	if current_scheme ~= selected_theme.wezterm then
-		window:set_config_overrides({ color_scheme = selected_theme.wezterm })
-		theme_manager.update_neovim_theme(selected_theme.neovim)
-	end
-end)
-
--- Apply initial themes based on system appearance
-local initial_theme = theme_manager.get_theme_for_appearance(wezterm.gui.get_appearance())
-config.color_scheme = initial_theme.wezterm
-theme_manager.update_neovim_theme(initial_theme.neovim)
 
 -- Apply keybindings from the imported file
 for k, v in pairs(keybindings) do
