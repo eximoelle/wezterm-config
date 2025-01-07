@@ -31,6 +31,9 @@ config.hide_mouse_cursor_when_typing = true
 config.initial_cols = 120
 config.initial_rows = 30
 
+-- Theme
+config.color_scheme = "Kibble"
+
 -- Cursor
 config.default_cursor_style = "BlinkingBlock"
 config.cursor_blink_rate = 500
