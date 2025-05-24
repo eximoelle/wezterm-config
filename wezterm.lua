@@ -10,11 +10,11 @@ for k, v in pairs(keybindings) do
 end
 
 -- Configuration options
-config.term = "wezterm"
+-- config.term = "wezterm"
 
 -- Font
-config.font = wezterm.font("DMMono Nerd Font")
-config.font_size = 13
+config.font = wezterm.font("ZedMono Nerd Font Mono")
+config.font_size = 14
 
 -- Decorations
 config.hide_tab_bar_if_only_one_tab = true
@@ -25,34 +25,18 @@ config.window_padding = {
 	bottom = 0,
 }
 config.window_decorations = "RESIZE"
-config.window_background_opacity = 0.85
-config.macos_window_background_blur = 10
+config.window_background_opacity = 0.96
+config.macos_window_background_blur = 4
 config.hide_mouse_cursor_when_typing = true
 config.initial_cols = 120
 config.initial_rows = 30
 
 -- Theme
-config.color_scheme = "Kibble"
+config.color_scheme = "Ayu Dark (Gogh)"
 
 -- Cursor
 config.default_cursor_style = "BlinkingBlock"
-config.cursor_blink_rate = 500
-config.cursor_blink_ease_in = {
-	CubicBezier = {
-		0.0,
-		0.9,
-		0.96,
-		1.0,
-	},
-}
-config.cursor_blink_ease_out = {
-	CubicBezier = {
-		0.0,
-		0.9,
-		0.96,
-		1.0,
-	},
-}
+-- config.cursor_blink_rate = 500
 
 -- Miscellaneous settings
 config.max_fps = 60
