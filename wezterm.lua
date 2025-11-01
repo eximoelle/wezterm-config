@@ -96,8 +96,6 @@ config.enable_kitty_graphics = true
 
 -- === Прокси ===
 config.set_environment_variables = {
-	HTTP_PROXY = "http://127.0.0.1:2080",
-	HTTPS_PROXY = "http://127.0.0.1:2080",
 	ALL_PROXY = "socks5://127.0.0.1:2080",
 	NO_PROXY = "localhost,127.0.0.1,.local",
 }
