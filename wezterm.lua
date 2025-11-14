@@ -94,11 +94,5 @@ config.automatically_reload_config = true
 config.window_close_confirmation = "NeverPrompt"
 config.enable_kitty_graphics = true
 
--- === Прокси ===
-config.set_environment_variables = {
-	ALL_PROXY = "socks5://127.0.0.1:2080",
-	NO_PROXY = "localhost,127.0.0.1,.local",
-}
-
 -- Вернуть всю эту конфигурацию в WezTerm
 return config
