@@ -16,6 +16,7 @@ config.check_for_updates = false
 -- === Шрифт ===
 -- C фоллбэком на случай отсутствия nerd-шрифта
 config.font = wezterm.font_with_fallback({
+	"Lilex Nerd Font",
 	"JetBrainsMono Nerd Font",
 	"0xProto Nerd Font",
 	"Monaco",
@@ -59,14 +60,6 @@ end
 -- А пока просто жёстко устанавливаем одну тему и для дня, и для ночи
 -- config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
 config.color_scheme = "Google (dark) (terminal.sexy)"
-
--- === Вкладки ===
-
-wezterm.on("format-tab-title", function(tab, tabs, panes, cfg, hover, max_width)
-	local idx = tab.tab_index + 1
-	local title = tab.active_pane.title:gsub("^%s*(.-)%s*$", "%1")
-	return { { Text = " " .. idx .. ": " .. title .. " " } }
-end)
 
 -- === Workspaces ===
 
