@@ -1,6 +1,7 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
+-- Сокращает длинные пути для статуса: /a/b/c/d -> /a/…/c/d
 local function shorten_path(path)
 	if not path or #path == 0 then
 		return ""
@@ -21,11 +22,11 @@ local function shorten_path(path)
 		return path
 	end
 
-	-- Keep the root, last two segments, and an ellipsis to avoid overly long status bars
+	-- Оставляем корень, два последних сегмента и многоточие, чтобы статус не разрастался
 	return prefix .. table.concat({ segments[1], "…", segments[#segments - 1], segments[#segments] }, "/")
 end
 
--- ===== Status bar (right) =====
+-- Правый статус-бар
 wezterm.on("update-right-status", function(window, pane)
 	local cwd_uri = pane:get_current_working_dir()
 	local cwd = cwd_uri and shorten_path(cwd_uri.file_path) or ""
@@ -42,7 +43,7 @@ wezterm.on("update-right-status", function(window, pane)
 	}))
 end)
 
--- ===== Tab titles =====
+-- Заголовки табов
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
 	local pane = tab.active_pane
 	local title = (tab.tab_title and tab.tab_title ~= "") and tab.tab_title or pane.title
@@ -62,9 +63,9 @@ return {
 	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
 
 	keys = {
-		-- ===== Панели (splits): операции через Leader =====
-		{ key = "|",          mods = "LEADER|SHIFT", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-		{ key = "-",          mods = "LEADER",       action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
+		-- Панели (splits)
+		{ key = "-",         mods = "LEADER",       action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
+		{ key = "\\",        mods = "LEADER",       action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
 
 		{ key = "z",          mods = "LEADER",       action = act.TogglePaneZoomState },
 		{ key = "q",          mods = "LEADER",       action = act.CloseCurrentPane({ confirm = true }) },
@@ -72,17 +73,17 @@ return {
 		{ key = "g",          mods = "LEADER",       action = act.PaneSelect },
 		{ key = "{",          mods = "LEADER|SHIFT", action = act.PaneSelect({ mode = "SwapWithActiveKeepFocus" }) },
 
-		-- Модальные режимы
+		-- Модальные режимы для работы с панелями
 		{ key = "r",          mods = "LEADER",       action = act.ActivateKeyTable({ name = "resize_mode", one_shot = false }) },
 		{ key = "m",          mods = "LEADER",       action = act.ActivateKeyTable({ name = "pane_mode", one_shot = false }) },
 
-		-- ===== Симметрия с nvim: Ctrl = move =====
+		-- Симметрия с nvim: Ctrl = фокус
 		{ key = "h",          mods = "CTRL",         action = act.ActivatePaneDirection("Left") },
 		{ key = "j",          mods = "CTRL",         action = act.ActivatePaneDirection("Down") },
 		{ key = "k",          mods = "CTRL",         action = act.ActivatePaneDirection("Up") },
 		{ key = "l",          mods = "CTRL",         action = act.ActivatePaneDirection("Right") },
 
-		-- ===== Симметрия с nvim: Alt = resize =====
+		-- Симметрия с nvim: Alt = ресайз
 		{ key = "h",          mods = "ALT",          action = act.AdjustPaneSize({ "Left", 3 }) },
 		{ key = "j",          mods = "ALT",          action = act.AdjustPaneSize({ "Down", 2 }) },
 		{ key = "k",          mods = "ALT",          action = act.AdjustPaneSize({ "Up", 2 }) },
@@ -93,7 +94,7 @@ return {
 		{ key = "UpArrow",    mods = "ALT",          action = act.AdjustPaneSize({ "Up", 2 }) },
 		{ key = "RightArrow", mods = "ALT",          action = act.AdjustPaneSize({ "Right", 3 }) },
 
-		-- ===== Табы =====
+		-- Табы
 		{ key = "c",          mods = "LEADER",       action = act.SpawnTab("CurrentPaneDomain") },
 		{ key = "x",          mods = "LEADER",       action = act.CloseCurrentTab({ confirm = true }) },
 		{ key = "n",          mods = "LEADER",       action = act.ActivateTabRelative(1) },
@@ -107,22 +108,22 @@ return {
 			return t
 		end)()),
 
-		-- ===== Поиск и копирование =====
+		-- Поиск и копирование
 		{ key = "v", mods = "LEADER",       action = act.ActivateCopyMode },
 		{ key = "f", mods = "LEADER",       action = act.Search("CurrentSelectionOrEmptyString") },
 		{ key = " ", mods = "LEADER",       action = act.QuickSelect },
 
-		-- ===== Workspaces =====
+		-- Workspaces
 		{ key = "w", mods = "LEADER",       action = act.EmitEvent("switch-workspace-prompt") },
 
-		-- ===== Командные интерфейсы =====
+		-- Командные интерфейсы
 		{ key = "P", mods = "LEADER|SHIFT", action = act.ActivateCommandPalette },
 		{ key = "L", mods = "LEADER|SHIFT", action = act.ShowLauncher },
 
-		-- ===== Новый shell =====
+		-- Новый shell
 		{ key = "s", mods = "LEADER",       action = act.SpawnCommandInNewTab({ args = { os.getenv("SHELL") or "zsh" } }) },
 
-		-- ===== Прозрачность =====
+		-- Переключение прозрачности
 		{
 			key = "o",
 			mods = "LEADER",
@@ -133,7 +134,7 @@ return {
 			end),
 		},
 
-		-- ===== macOS привычки =====
+		-- macOS-привычки
 		{ key = "t",     mods = "CMD",       action = act.SpawnTab("CurrentPaneDomain") },
 		{ key = "w",     mods = "CMD",       action = act.CloseCurrentPane({ confirm = true }) },
 		{ key = "w",     mods = "CMD|SHIFT", action = act.CloseCurrentTab({ confirm = true }) },
@@ -144,6 +145,7 @@ return {
 
 	key_tables = {
 		resize_mode = {
+			-- Режим ресайза, выход по Esc/Enter
 			{ key = "h",          action = act.AdjustPaneSize({ "Left", 3 }) },
 			{ key = "j",          action = act.AdjustPaneSize({ "Down", 2 }) },
 			{ key = "k",          action = act.AdjustPaneSize({ "Up", 2 }) },
@@ -159,24 +161,24 @@ return {
 		},
 
 		pane_mode = {
-			-- фокус
+			-- Фокус
 			{ key = "h",      action = act.ActivatePaneDirection("Left") },
 			{ key = "j",      action = act.ActivatePaneDirection("Down") },
 			{ key = "k",      action = act.ActivatePaneDirection("Up") },
 			{ key = "l",      action = act.ActivatePaneDirection("Right") },
 
-			-- ресайз (Shift+hjkl)
+			-- Ресайз (Shift+hjkl)
 			{ key = "H",      action = act.AdjustPaneSize({ "Left", 3 }) },
 			{ key = "J",      action = act.AdjustPaneSize({ "Down", 2 }) },
 			{ key = "K",      action = act.AdjustPaneSize({ "Up", 2 }) },
 			{ key = "L",      action = act.AdjustPaneSize({ "Right", 3 }) },
 
-			-- перестановки/ротации
+			-- Перестановки/ротации
 			{ key = "g",      action = act.PaneSelect },
 			{ key = "{",      action = act.PaneSelect({ mode = "SwapWithActiveKeepFocus" }) },
 			{ key = "R",      action = act.RotatePanes("Clockwise") },
 
-			-- быстрые операции
+			-- Быстрые операции
 			{ key = "z",      action = act.TogglePaneZoomState },
 			{ key = "q",      action = act.CloseCurrentPane({ confirm = true }) },
 
@@ -186,6 +188,11 @@ return {
 	},
 
 	mouse_bindings = {
-		-- стандартное поведение
+        {
+            -- Копирование в буфер правой кнопкой мыши
+              event = { Up = { streak = 1, button = "Right" } },
+              mods = "NONE",
+              action = wezterm.action.CopyTo "Clipboard",
+            },
 	},
 }

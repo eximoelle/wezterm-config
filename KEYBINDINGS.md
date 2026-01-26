@@ -1,106 +1,94 @@
 ## Leader и базовый принцип
 
-| Комбинация | Действие |
-|------------|----------|
-| Ctrl+a     | Leader |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Ctrl + a                | Leader                         |
 
-## Панели: симметричные бинды (без Leader)
+Кейбинды Wezterm максимально приближены к Neovim-кейбиндам.
 
-| Комбинация    | Действие |
-|--------------|----------|
-| Ctrl + h      | Focus pane left |
-| Ctrl + j      | Focus pane down |
-| Ctrl + k      | Focus pane up |
-| Ctrl + l      | Focus pane right |
-| Alt + h       | Resize pane left |
-| Alt + j       | Resize pane down |
-| Alt + k       | Resize pane up |
-| Alt + l       | Resize pane right |
-| Alt + ←       | Resize pane left |
-| Alt + ↓       | Resize pane down |
-| Alt + ↑       | Resize pane up |
-| Alt + →       | Resize pane right |
+Заглавные буквы в означают модификатор Shift. Строчные — без Shift.
 
-## Панели: операции через Leader
+## Панели
 
-| Комбинация         | Действие |
-|-------------------|----------|
-| Leader + \|        | Split pane horizontally |
-| Leader + -         | Split pane vertically |
-| Leader + z         | Toggle pane zoom |
-| Leader + q         | Close current pane |
-| Leader + g         | Pane select |
-| Leader + Shift + { | Swap pane with selected |
-| Leader + r         | Enter resize-mode |
-| Leader + m         | Enter pane-mode |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Ctrl + h                | Фокус на панель слева          |
+| Ctrl + j                | Фокус на панель снизу          |
+| Ctrl + k                | Фокус на панель сверху         |
+| Ctrl + l                | Фокус на панель справа         |
+| Alt + h / Alt + ←       | Ресайз панели влево            |
+| Alt + j / Alt + ↓       | Ресайз панели вниз             |
+| Alt + k / Alt + ↑       | Ресайз панели вверх            |
+| Alt + l / Alt + →       | Ресайз панели вправо           |
+| Leader + \\             | Разделить панель вертикально   |
+| Leader + -              | Разделить панель горизонтально |
+| Leader + z              | Зум панели                     |
+| Leader + q              | Закрыть текущую панель         |
+| Leader + g              | Выбрать панель                 |
+| Leader + Shift + {      | Поменять панель с соседней     |
 
-## Модальные режимы (key tables)
+## Модальные режимы
 
-### Resize-mode
+### Режим ресайза
 
-| Комбинация | Действие |
-|------------|----------|
-| h / ←      | Resize pane left |
-| j / ↓      | Resize pane down |
-| k / ↑      | Resize pane up |
-| l / →      | Resize pane right |
-| Esc        | Exit resize-mode |
-| Enter      | Exit resize-mode |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Leader + r              | Войти в режим ресайза          |
+| h / ←                   | Ресайз влево                   |
+| j / ↓                   | Ресайз вниз                    |
+| k / ↑                   | Ресайз вверх                   |
+| l / →                   | Ресайз вправо                  |
+| Esc / Enter             | Выйти из режима ресайза        |
 
-### Pane-mode
+### Режим панелей
 
-| Комбинация     | Действие |
-|----------------|----------|
-| h / j / k / l  | Focus pane |
-| H / J / K / L  | Resize pane |
-| g              | Pane select |
-| {              | Swap pane |
-| R              | Rotate panes clockwise |
-| z              | Toggle pane zoom |
-| q              | Close current pane |
-| Esc            | Exit pane-mode |
-| Enter          | Exit pane-mode |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Leader + m              | Войти в режим панелей          |
+| h / j / k / l           | Фокус на панель                |
+| H / J / K / L           | Изменить размер панели         |
+| g                       | Выбор панели                   |
+| {                       | Переместить панель             |
+| R                       | Повернуть панели по часовой стрелке |
+| z                       | Переключить панель на полный экран |
+| q                       | Закрыть текущую панель         |
+| Esc / Enter             | Выйти из режима панелей        |
 
 ## Табы
 
-| Комбинация     | Действие |
-|----------------|----------|
-| Leader + c     | New tab |
-| Leader + x     | Close current tab |
-| Leader + n     | Next tab |
-| Leader + p     | Previous tab |
-| Leader + 1..9  | Activate tab 1..9 |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Leader + c              | Новый таб                      |
+| Leader + x              | Закрыть текущий таб            |
+| Leader + n              | Следующий таб                  |
+| Leader + p              | Предыдущий таб                 |
+| Leader + 1..9           | Перейти к табу 1..9            |
 
 ## Поиск и копирование
 
-| Комбинация     | Действие |
-|----------------|----------|
-| Leader + v     | Copy mode |
-| Leader + f     | Search |
-| Leader + Space | Quick select |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Leader + v              | Режим копирования              |
+| Leader + f              | Поиск                          |
+| Leader + Space          | Быстрый выбор                  |
 
-## Workspaces и интерфейсы
+## Воркспейсы и интерфейс
 
-| Комбинация         | Действие |
-|-------------------|----------|
-| Leader + w         | Workspace prompt |
-| Leader + Shift + P | Command palette |
-| Leader + Shift + L | Launcher |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Leader + w              | Назвать воркспейс              |
+| Leader + P              | Палитра команд                 |
+| Leader + L              | Launcher                       |
+| Leader + s              | Перезапустить Shell в табе     |
+| Leader + o              | Переключить прозрачность       |
 
-## Shell и визуальные настройки
+## macOS-привычные клавиши
 
-| Комбинация | Действие |
-|------------|----------|
-| Leader + s | New shell in tab |
-| Leader + o | Toggle transparency |
-
-## macOS-кейбинды
-
-| Комбинация        | Действие |
-|------------------|----------|
-| Cmd + t           | New tab |
-| Cmd + w           | Close current pane |
-| Cmd + Shift + w   | Close current tab |
-| Cmd + Enter       | Toggle fullscreen |
-| Cmd + [           | Previous tab |
-| Cmd + ]           | Next tab |
+| Комбинация              | Действие                       |
+|-------------------------|--------------------------------|
+| Cmd + t                 | Новый таб                      |
+| Cmd + w                 | Закрыть текущую панель         |
+| Cmd + W                 | Закрыть текущий таб            |
+| Cmd + Enter             | Переключить полноэкранный режим|
+| Cmd + [                 | Предыдущий таб                 |
+| Cmd + ]                 | Следующий таб                  |
