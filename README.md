@@ -22,7 +22,27 @@
 
 [Подробности здесь](https://wezfurlong.org/wezterm/config/lua/config/term.html).
 
-Полный список клавишных сочетаний см. в файле `KEYBINDINGS.md`.
+## Текущее поведение
+
+- Leader: `Ctrl-a`
+- Навигация по панелям: `Ctrl-h`, `Ctrl-j`, `Ctrl-k`, `Ctrl-l`
+- Разделение панелей: `Leader \` и `Leader -`
+- Табы: `Leader c`, `Leader x`, `Leader n`, `Leader p`, `Leader 1..9`
+- Поиск и выбор: `Leader f`, `Leader Space`, `Leader v`
+- Launcher: `Leader Shift-l`
+- Командная палитра: `Leader Shift-p`
+- Workspace: `Leader w`
+- Новый shell в отдельном tab: `Leader s`
+- Статус справа в tab bar показывает `SSH`, `WS` и `DIR` для активной панели
+
+## Основные клавиши macOS
+
+- `Cmd-t`: новый tab
+- `Cmd-w`: закрыть текущую панель
+- `Cmd-Shift-w`: закрыть текущий tab
+- `Cmd-Enter`: полноэкранный режим
+- `Cmd-[`: предыдущий tab
+- `Cmd-]`: следующий tab
 
 ## Thanks for the inspiration
 

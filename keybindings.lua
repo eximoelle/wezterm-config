@@ -1,63 +1,34 @@
 local wezterm = require("wezterm")
 local act = wezterm.action
 
--- Сокращает длинные пути для статуса: /a/b/c/d -> /a/…/c/d
-local function shorten_path(path)
-	if not path or #path == 0 then
-		return ""
-	end
-
-	local home = wezterm.home_dir
-	if home and path:find(home, 1, true) == 1 then
-		path = path:gsub("^" .. home, "~")
-	end
-
-	local prefix = path:sub(1, 1) == "/" and "/" or ""
-	local segments = {}
-	for part in path:gmatch("[^/]+") do
-		table.insert(segments, part)
-	end
-
-	if #segments <= 3 then
-		return path
-	end
-
-	-- Оставляем корень, два последних сегмента и многоточие, чтобы статус не разрастался
-	return prefix .. table.concat({ segments[1], "…", segments[#segments - 1], segments[#segments] }, "/")
+local function is_vim(pane)
+	return pane:get_user_vars().IS_NVIM == "true"
 end
 
--- Правый статус-бар
-wezterm.on("update-right-status", function(window, pane)
-	local cwd_uri = pane:get_current_working_dir()
-	local cwd = cwd_uri and shorten_path(cwd_uri.file_path) or ""
+local direction_keys = {
+	h = "Left",
+	j = "Down",
+	k = "Up",
+	l = "Right",
+	LeftArrow = "Left",
+	DownArrow = "Down",
+	UpArrow = "Up",
+	RightArrow = "Right",
+}
 
-	local host = wezterm.hostname()
-	local ws = window:active_workspace()
-	local time = wezterm.strftime("%Y-%m-%d %H:%M")
-
-	window:set_right_status(wezterm.format({
-		{ Text = " " .. ws .. " " },
-		{ Text = "| " .. host .. " " },
-		{ Text = "| " .. time .. " " },
-		{ Text = "| " .. cwd .. " " },
-	}))
-end)
-
--- Заголовки табов
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local pane = tab.active_pane
-	local title = (tab.tab_title and tab.tab_title ~= "") and tab.tab_title or pane.title
-
-	local idx = (tab.tab_index or 0) + 1
-	local prefix = tostring(idx) .. ": "
-
-	local max = math.max(10, max_width - 3)
-	if #title > max then
-		title = title:sub(1, max - 1) .. "…"
-	end
-
-	return prefix .. title
-end)
+local function split_nav(key)
+	return {
+		key = key,
+		mods = "CTRL",
+		action = wezterm.action_callback(function(win, pane)
+			if is_vim(pane) then
+				win:perform_action({ SendKey = { key = key, mods = "CTRL" } }, pane)
+			else
+				win:perform_action({ ActivatePaneDirection = direction_keys[key] }, pane)
+			end
+		end),
+	}
+end
 
 return {
 	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 },
@@ -77,22 +48,11 @@ return {
 		{ key = "r",          mods = "LEADER",       action = act.ActivateKeyTable({ name = "resize_mode", one_shot = false }) },
 		{ key = "m",          mods = "LEADER",       action = act.ActivateKeyTable({ name = "pane_mode", one_shot = false }) },
 
-		-- Симметрия с nvim: Ctrl = фокус
-		{ key = "h",          mods = "CTRL",         action = act.ActivatePaneDirection("Left") },
-		{ key = "j",          mods = "CTRL",         action = act.ActivatePaneDirection("Down") },
-		{ key = "k",          mods = "CTRL",         action = act.ActivatePaneDirection("Up") },
-		{ key = "l",          mods = "CTRL",         action = act.ActivatePaneDirection("Right") },
-
-		-- Симметрия с nvim: Alt = ресайз
-		{ key = "h",          mods = "ALT",          action = act.AdjustPaneSize({ "Left", 3 }) },
-		{ key = "j",          mods = "ALT",          action = act.AdjustPaneSize({ "Down", 2 }) },
-		{ key = "k",          mods = "ALT",          action = act.AdjustPaneSize({ "Up", 2 }) },
-		{ key = "l",          mods = "ALT",          action = act.AdjustPaneSize({ "Right", 3 }) },
-
-		{ key = "LeftArrow",  mods = "ALT",          action = act.AdjustPaneSize({ "Left", 3 }) },
-		{ key = "DownArrow",  mods = "ALT",          action = act.AdjustPaneSize({ "Down", 2 }) },
-		{ key = "UpArrow",    mods = "ALT",          action = act.AdjustPaneSize({ "Up", 2 }) },
-		{ key = "RightArrow", mods = "ALT",          action = act.AdjustPaneSize({ "Right", 3 }) },
+		-- Умная интеграция с nvim: внутри nvim клавиши проходят в редактор, вне nvim управляют pane WezTerm
+		split_nav("h"),
+		split_nav("j"),
+		split_nav("k"),
+		split_nav("l"),
 
 		-- Табы
 		{ key = "c",          mods = "LEADER",       action = act.SpawnTab("CurrentPaneDomain") },
@@ -112,27 +72,36 @@ return {
 		{ key = "v", mods = "LEADER",       action = act.ActivateCopyMode },
 		{ key = "f", mods = "LEADER",       action = act.Search("CurrentSelectionOrEmptyString") },
 		{ key = " ", mods = "LEADER",       action = act.QuickSelect },
+		{ key = "UpArrow", mods = "SHIFT",  action = act.ScrollToPrompt(-1) },
+		{ key = "DownArrow", mods = "SHIFT", action = act.ScrollToPrompt(1) },
 
 		-- Workspaces
 		{ key = "w", mods = "LEADER",       action = act.EmitEvent("switch-workspace-prompt") },
 
 		-- Командные интерфейсы
 		{ key = "P", mods = "LEADER|SHIFT", action = act.ActivateCommandPalette },
-		{ key = "L", mods = "LEADER|SHIFT", action = act.ShowLauncher },
+		{
+			key = "L",
+			mods = "LEADER|SHIFT",
+			action = act.ShowLauncherArgs({
+				flags = "FUZZY|TABS|WORKSPACES|DOMAINS",
+				title = "Tabs, Workspaces & SSH",
+			}),
+		},
 
 		-- Новый shell
 		{ key = "s", mods = "LEADER",       action = act.SpawnCommandInNewTab({ args = { os.getenv("SHELL") or "zsh" } }) },
 
 		-- Переключение прозрачности
-		{
-			key = "o",
-			mods = "LEADER",
-			action = wezterm.action_callback(function(win, _)
-				local a = win:get_config_overrides() or {}
-				a.window_background_opacity = (a.window_background_opacity == 1.0) and 0.92 or 1.0
-				win:set_config_overrides(a)
-			end),
-		},
+			{
+				key = "o",
+				mods = "LEADER",
+				action = wezterm.action_callback(function(win, _)
+					local a = win:get_config_overrides() or {}
+					a.window_background_opacity = (a.window_background_opacity == 1.0) and 0.96 or 1.0
+					win:set_config_overrides(a)
+				end),
+			},
 
 		-- macOS-привычки
 		{ key = "t",     mods = "CMD",       action = act.SpawnTab("CurrentPaneDomain") },
